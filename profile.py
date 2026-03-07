@@ -7,6 +7,11 @@ def create_profile_tab(parent, username):
 
     tk.Label(profile_frame, text=f"User: {username}", font=("Arial", 14)).pack(pady=10)
 
+    tk.Label(profile_frame, text="Points Earned:").pack(anchor='w', padx=10)
+    points_var = tk.StringVar(value="0")  # default 0 if file doesn't exist
+    points_entry = tk.Entry(profile_frame, textvariable=points_var, width=10, state='readonly')
+    points_entry.pack(padx=10, pady=5, anchor='w')
+
     tk.Label(profile_frame, text="Hours Logged:").pack(anchor='w', padx=10)
     hours_var = tk.StringVar(value="0")  # default 0 if file doesn't exist
     hours_entry = tk.Entry(profile_frame, textvariable=hours_var, width=10, state='readonly')
@@ -59,7 +64,9 @@ def create_profile_tab(parent, username):
         with open(user_file_path, "r") as f:
             for line in f:
                 line = line.strip()
-                if line.startswith("HoursLogged:"):
+                if line.startswith("PointsEarned:"):
+                    points_var.set(line.replace("PointsEarned:", "").strip())
+                elif line.startswith("HoursLogged:"):
                     hours_var.set(line.replace("HoursLogged:", "").strip())
                 elif line.startswith("School:"):
                     school_entry.insert(0, line.replace("School:", "").strip())
@@ -77,6 +84,7 @@ def create_profile_tab(parent, username):
                     group_size_var.set(line.replace("GroupSize:", "").strip())
 
     def save_profile():
+        points = points_var.get()
         hours = hours_var.get()
         school = school_entry.get().strip()
         bio = bio_text.get("1.0", tk.END).strip()
@@ -90,6 +98,7 @@ def create_profile_tab(parent, username):
             os.makedirs("userInfo")
 
         with open(user_file_path, "w") as f:
+            f.write(f"PointsEarned: {points_var.get()}\n")
             f.write(f"HoursLogged: {hours}\n")
             f.write(f"School: {school}\n")
             f.write(f"Bio: {bio}\n")

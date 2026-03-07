@@ -121,6 +121,7 @@ def create_account_window(parent):
         os.makedirs("userInfo", exist_ok=True)
         user_file_path = os.path.join("userInfo", f"{uname}.txt")
         with open(user_file_path, "w") as f:
+            f.write("PointsEarned: 0\n")
             f.write("HoursLogged: 0\n")
 
         messagebox.showinfo("Success", f"Account for {uname} created!", parent=win)
