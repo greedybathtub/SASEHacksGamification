@@ -1,5 +1,5 @@
-PointsEarned: 0
-HoursLogged: 0
+PointsEarned: 15
+HoursLogged: 3.0
 School: UF
 Bio: I am a physics student at UF.
 Subjects: physics 1, calc 2
@@ -7,3 +7,4 @@ StudyStyle: Either
 StudyTime: Evening
 Location: Dorm/Room
 GroupSize: Medium (4-6)
+Matches: study,test

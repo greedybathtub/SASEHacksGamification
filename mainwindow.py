@@ -17,9 +17,6 @@ def open_main_window(username):
     notebook = ttk.Notebook(main_window)
     notebook.pack(expand=True, fill='both')
 
-    home = tk.Frame(notebook)
-    notebook.add(home, text="Home")
-
     profile = create_profile_tab(notebook, username)
     notebook.add(profile, text="Profile")
 
@@ -31,11 +28,6 @@ def open_main_window(username):
 
     log_hours = create_log_hours_tab(notebook, username)
     notebook.add(log_hours, text="Log Hours")
-
-    settings = tk.Frame(notebook)
-    notebook.add(settings, text="Settings")
-
-    tk.Label(settings, text="Settings tab").pack(pady=20)
 
     def logout():
         main_window.destroy()

@@ -1,5 +1,5 @@
-PointsEarned: 0
-HoursLogged: 0
+PointsEarned: 10
+HoursLogged: 2.0
 School: ERAU
 Bio: I am a computer science student at ERAU. I love to code and swim
 Subjects: python, comp arch

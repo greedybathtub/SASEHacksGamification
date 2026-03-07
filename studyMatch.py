@@ -8,8 +8,24 @@ def create_match_tab(parent, username):
     tk.Label(match_frame, text="Find study partners!", font=("Arial", 14)).pack(pady=10)
 
     user_files = [
-        f for f in os.listdir("userInfo")
-        if f.endswith(".txt") and f.replace(".txt", "") != username
+    f for f in os.listdir("userInfo")
+    if f.endswith(".txt") and f.replace(".txt", "") != username
+    ]
+
+    current_user_file = os.path.join("userInfo", f"{username}.txt")
+    existing_matches = []
+
+    if os.path.exists(current_user_file):
+        with open(current_user_file, "r") as f:
+            for line in f:
+                if line.startswith("Matches:"):
+                    existing_matches = line.replace("Matches:", "").strip().split(",")
+                    if existing_matches == ['']:
+                        existing_matches = []
+
+    user_files = [
+        f for f in user_files
+        if f.replace(".txt", "") not in existing_matches
     ]
 
     if not user_files:
