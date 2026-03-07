@@ -51,12 +51,12 @@ def create_account():
             return
         
         with open("users.txt", "a") as file:
-            file.seek(0, 2)  # go to end of file
+            file.seek(0, 2)
             file.write(new_username + " " + new_password + "\n")
 
         user_file_path = os.path.join("userInfo", f"{new_username}.txt")
         with open(user_file_path, "w") as f:
-            f.write(f"{new_username}\n")
+            f.write("HoursLogged: 0\n")
         messagebox.showinfo("Account Created", "Account for " + new_username + " has been created.")
         create_window.destroy()
 

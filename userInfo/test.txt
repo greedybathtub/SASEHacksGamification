@@ -1,0 +1,8 @@
+HoursLogged: 0
+School: ERAU
+Bio: I am a student at embry riddle. I study AE.
+Subjects: calc 3, rocket prop
+StudyStyle: Active discussion
+StudyTime: Morning
+Location: Cafe
+GroupSize: Medium (4-6)
