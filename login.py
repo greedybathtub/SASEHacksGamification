@@ -1,13 +1,36 @@
 import tkinter as tk
-import os
 from tkinter import messagebox
-from mainwindow import open_main_window
+import tkinter.font as tkfont
+import os
+from mainwindow import open_main_window  # Make sure this exists in your project
 
+# ── colours ──────────────────────────────────────────────────────────────────
+BG_OUTER  = "#F5D6A0"   # warm sandy yellow border
+BG_CARD   = "#B8D4EE"   # soft sky blue card
+PINK      = "#F4A0B5"   # pixel-art title / link pink
+INPUT_BG  = "#F0F4F8"   # near-white input background
+INPUT_FG  = "#8AA8C0"   # muted blue placeholder text
+BTN_BG    = "#F4A0B5"   # pink login button
+BTN_FG    = "#FFFFFF"
+BTN_HOV   = "#F08098"
+
+PIXEL_FONTS = ["Press Start 2P", "Courier New", "Courier", "monospace"]
+
+def best_font(families, size, weight="normal"):
+    available = tkfont.families()
+    for f in families:
+        if f in available:
+            return (f, size, weight)
+    return (families[-1], size, weight)
+
+# ── auth helpers ──────────────────────────────────────────────────────────────
 def verify(user1, pass1):
     try:
         with open("users.txt", "r") as file:
             for line in file:
                 userpass = line.strip().split()
+                if len(userpass) != 2:
+                    continue
                 username, password = userpass
                 if username == user1 and password == pass1:
                     return True
@@ -16,85 +39,184 @@ def verify(user1, pass1):
         messagebox.showerror("Error", "User file not found.")
         return False
 
-
-def login():
-    username = user1.get()
-    password = pass1.get()
-    if verify(username, password):
-        messagebox.showinfo("Login Successful", "Welcome, " + username + "!")
-        window.withdraw()
-        open_main_window(username)
-        window.deiconify()
-    else:
-        messagebox.showerror("Login Failed", "Invalid username or password.")
-
-def create_account():
-    create_window = tk.Toplevel(window)
-    create_window.title("Create Account")
-    create_window.geometry("300x150")
-    tk.Label(create_window, text="New Username:").pack()
-    new_user = tk.Entry(create_window)
-    new_user.pack()
-    tk.Label(create_window, text="New Password:").pack()
-    new_pass = tk.Entry(create_window, show="*")
-    new_pass.pack()
-
-    def save_account():
-        new_username = new_user.get()
-        new_password = new_pass.get()
-
-        if new_username == "" or new_password == "":
-            messagebox.showerror("Error", "Username and password cannot be empty.")
-            return
-        if username_exists(new_username):
-            messagebox.showerror("Error", "Username already exists.")
-            return
-        
-        with open("users.txt", "a") as file:
-            file.seek(0, 2)
-            file.write(new_username + " " + new_password + "\n")
-
-        user_file_path = os.path.join("userInfo", f"{new_username}.txt")
-        with open(user_file_path, "w") as f:
-            f.write("HoursLogged: 0\n")
-        messagebox.showinfo("Account Created", "Account for " + new_username + " has been created.")
-        create_window.destroy()
-
-    tk.Button(create_window, text="Create Account", command=save_account).pack(pady=10)
-
-
 def username_exists(username):
     try:
         with open("users.txt", "r") as file:
             for line in file:
                 userpass = line.strip().split()
-                if userpass[0] == username:
+                if userpass and userpass[0] == username:
                     return True
         return False
     except FileNotFoundError:
         return False
 
-window = tk.Tk()
-window.title("Login")
-window.geometry("300x300")
+# ── hover effect for button ───────────────────────────────────────────────────
+def on_enter(e, btn):
+    btn.config(bg=BTN_HOV)
 
-title_label = tk.Label(window, text="Please Login")
-title_label.pack(pady=10)
+def on_leave(e, btn):
+    btn.config(bg=BTN_BG)
 
-username_label = tk.Label(window, text="Username:")
-username_label.pack()
-user1 = tk.Entry(window)
-user1.pack()
+# ── create-account window ─────────────────────────────────────────────────────
+def create_account_window(parent):
+    win = tk.Toplevel(parent)
+    win.title("Create Account")
+    win.geometry("320x340")
+    win.resizable(False, False)
+    win.configure(bg=BG_OUTER)
 
-password_label = tk.Label(window, text="Password:")
-password_label.pack()
-pass1 = tk.Entry(window, show="*")
-pass1.pack()
+    card = tk.Frame(win, bg=BG_CARD, bd=0)
+    card.place(relx=0.5, rely=0.5, anchor="center", width=280, height=300)
 
-login_button = tk.Button(window, text="Login", command=login)
-login_button.pack(pady=10)
+    title_font = best_font(PIXEL_FONTS, 11, "bold")
+    label_font = best_font(["Nunito", "Helvetica Neue", "Helvetica"], 9)
+    entry_font = best_font(["Nunito", "Helvetica Neue", "Helvetica"], 11)
 
-create_button = tk.Button(window, text="Create Account", command=create_account)
-create_button.pack()
+    tk.Label(card, text="NEW ACCOUNT", font=title_font,
+             fg=PINK, bg=BG_CARD).pack(pady=(22, 16))
 
-window.mainloop()
+    def make_entry(parent, placeholder, show=None):
+        frame = tk.Frame(parent, bg=INPUT_BG, bd=0)
+        frame.pack(padx=20, pady=6, fill="x")
+        e = tk.Entry(frame, font=entry_font, bg=INPUT_BG, fg=INPUT_FG,
+                     bd=0, relief="flat", show=show or "")
+        e.insert(0, placeholder)
+        e.pack(padx=14, pady=10, fill="x")
+
+        def on_focus_in(ev, entry=e, ph=placeholder):
+            if entry.get() == ph:
+                entry.delete(0, "end")
+                entry.config(fg="#4a6a85")
+                if show:
+                    entry.config(show=show)
+
+        def on_focus_out(ev, entry=e, ph=placeholder):
+            if entry.get() == "":
+                entry.config(fg=INPUT_FG)
+                entry.config(show="")
+                entry.insert(0, ph)
+
+        e.bind("<FocusIn>",  on_focus_in)
+        e.bind("<FocusOut>", on_focus_out)
+        return e, frame
+
+    u_entry, _ = make_entry(card, "Username")
+    p_entry, _ = make_entry(card, "Password", show="*")
+
+    def save():
+        uname = u_entry.get().strip()
+        pword = p_entry.get().strip()
+        if uname in ("", "Username") or pword in ("", "Password"):
+            messagebox.showerror("Error", "Fields cannot be empty.", parent=win)
+            return
+        if username_exists(uname):
+            messagebox.showerror("Error", "Username already exists.", parent=win)
+            return
+        
+        # Save to users.txt
+        with open("users.txt", "a") as fh:
+            fh.write(uname + " " + pword + "\n")
+        
+        # Create individual user info file
+        os.makedirs("userInfo", exist_ok=True)
+        user_file_path = os.path.join("userInfo", f"{uname}.txt")
+        with open(user_file_path, "w") as f:
+            f.write("HoursLogged: 0\n")
+
+        messagebox.showinfo("Success", f"Account for {uname} created!", parent=win)
+        win.destroy()
+
+    btn = tk.Button(card, text="Create Account", command=save,
+                    bg=BTN_BG, fg=BTN_FG, font=(label_font[0], 10, "bold"),
+                    bd=0, relief="flat", cursor="hand2",
+                    activebackground=BTN_HOV, activeforeground=BTN_FG,
+                    padx=20, pady=8)
+    btn.pack(pady=(14, 0))
+    btn.bind("<Enter>", lambda e: on_enter(e, btn))
+    btn.bind("<Leave>", lambda e: on_leave(e, btn))
+
+# ── main login window ─────────────────────────────────────────────────────────
+def build_main():
+    window = tk.Tk()
+    window.title("Login")
+    window.geometry("375x667")
+    window.resizable(False, False)
+    window.configure(bg=BG_OUTER)
+
+    card_w, card_h = 320, 580
+    card = tk.Frame(window, bg=BG_CARD, bd=0)
+    card.place(relx=0.5, rely=0.5, anchor="center", width=card_w, height=card_h)
+
+    title_font = best_font(PIXEL_FONTS, 26, "bold")
+    tk.Label(card, text="LOGIN", font=title_font,
+             fg=PINK, bg=BG_CARD).pack(pady=(60, 40))
+
+    entry_font = best_font(["Nunito", "Helvetica Neue", "Helvetica"], 13)
+    entries = {}
+
+    def make_field(placeholder, show=None):
+        outer = tk.Frame(card, bg=INPUT_BG, bd=0)
+        outer.pack(padx=24, pady=8, fill="x", ipady=2)
+        e = tk.Entry(outer, font=entry_font, bg=INPUT_BG, fg=INPUT_FG,
+                     bd=0, relief="flat", show=show or "",
+                     highlightthickness=0)
+        e.insert(0, placeholder)
+        e.pack(padx=18, pady=12, fill="x")
+
+        def focus_in(ev, entry=e, ph=placeholder):
+            if entry.get() == ph:
+                entry.delete(0, "end")
+                entry.config(fg="#2d5578")
+                if show:
+                    entry.config(show=show)
+
+        def focus_out(ev, entry=e, ph=placeholder):
+            if entry.get() == "":
+                entry.config(fg=INPUT_FG, show="")
+                entry.insert(0, ph)
+
+        e.bind("<FocusIn>",  focus_in)
+        e.bind("<FocusOut>", focus_out)
+        return e
+
+    user_entry = make_field("Username")
+    pass_entry = make_field("Password", show="*")
+    entries["user"] = user_entry
+    entries["pass"] = pass_entry
+
+    btn_font = best_font(["Nunito", "Helvetica Neue", "Helvetica"], 12, "bold")
+
+    def do_login():
+        u = entries["user"].get()
+        p = entries["pass"].get()
+        if u in ("", "Username") or p in ("", "Password"):
+            messagebox.showerror("Login Failed", "Please enter your credentials.")
+            return
+        if verify(u, p):
+            messagebox.showinfo("Login Successful", f"Welcome, {u}! ♡")
+            window.withdraw()
+            open_main_window(u)
+            window.deiconify()
+        else:
+            messagebox.showerror("Login Failed", "Invalid username or password.")
+
+    login_btn = tk.Button(card, text="Login", command=do_login,
+                          bg=BTN_BG, fg=BTN_FG, font=btn_font,
+                          bd=0, relief="flat", cursor="hand2",
+                          activebackground=BTN_HOV, activeforeground=BTN_FG,
+                          padx=60, pady=11)
+    login_btn.pack(pady=(22, 0))
+    login_btn.bind("<Enter>", lambda e: on_enter(e, login_btn))
+    login_btn.bind("<Leave>", lambda e: on_leave(e, login_btn))
+
+    link_font = best_font(["Nunito", "Helvetica Neue", "Helvetica"], 9)
+    link = tk.Label(card, text="New Member? Create an Account!",
+                    font=link_font, fg=PINK, bg=BG_CARD, cursor="hand2")
+    link.pack(pady=(14, 0))
+    link.bind("<Button-1>", lambda e: create_account_window(window))
+
+    window.mainloop()
+
+
+if __name__ == "__main__":
+    build_main()
