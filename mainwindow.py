@@ -1,10 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
+from profile import create_profile_tab
 
 def open_main_window(username):
     main_window = tk.Toplevel()
     main_window.title("Main Window")
-    main_window.geometry("400x300")
+    main_window.geometry("500x400")
 
     welcome_label = tk.Label(main_window, text=f"Welcome, {username}!", font=("Arial", 16))
     welcome_label.pack(pady=20)
@@ -15,7 +16,7 @@ def open_main_window(username):
     home = tk.Frame(notebook)
     notebook.add(home, text="Home")
 
-    profile = tk.Frame(notebook)
+    profile = create_profile_tab(notebook, username)
     notebook.add(profile, text="Profile")
 
     tk.Label(profile, text=f"User: {username}").pack(pady=20)
@@ -25,12 +26,9 @@ def open_main_window(username):
 
     tk.Label(settings, text="Settings tab").pack(pady=20)
 
-    main_window.mainloop()
-
     def logout():
         main_window.destroy()
 
-    tk.Button(main_window, text="Close Window", command=logout).pack(pady=20)
-
+    tk.Button(main_window, text="Close", command=logout).pack(pady=10)
 
     main_window.mainloop()
