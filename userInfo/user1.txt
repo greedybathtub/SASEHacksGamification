@@ -1,3 +1,4 @@
+PointsEarned: 0
 HoursLogged: 0
 School: UF
 Bio: I am a physics student at UF.

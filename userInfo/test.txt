@@ -1,3 +1,4 @@
+PointsEarned: 0
 HoursLogged: 0
 School: ERAU
 Bio: I am a student at embry riddle. I study AE.
@@ -6,3 +7,4 @@ StudyStyle: Active discussion
 StudyTime: Morning
 Location: Cafe
 GroupSize: Medium (4-6)
+Matches: study,user1
