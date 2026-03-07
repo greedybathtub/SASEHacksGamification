@@ -1,5 +1,7 @@
 import tkinter as tk
+import os
 from tkinter import messagebox
+from mainwindow import open_main_window
 
 def verify(user1, pass1):
     try:
@@ -20,6 +22,9 @@ def login():
     password = pass1.get()
     if verify(username, password):
         messagebox.showinfo("Login Successful", "Welcome, " + username + "!")
+        window.withdraw()
+        open_main_window(username)
+        window.deiconify()
     else:
         messagebox.showerror("Login Failed", "Invalid username or password.")
 
@@ -48,6 +53,10 @@ def create_account():
         with open("users.txt", "a") as file:
             file.seek(0, 2)  # go to end of file
             file.write(new_username + " " + new_password + "\n")
+
+        user_file_path = os.path.join("userInfo", f"{new_username}.txt")
+        with open(user_file_path, "w") as f:
+            f.write(f"{new_username}\n")
         messagebox.showinfo("Account Created", "Account for " + new_username + " has been created.")
         create_window.destroy()
 
