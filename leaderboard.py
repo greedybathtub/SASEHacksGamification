@@ -2,9 +2,9 @@ import tkinter as tk
 from addMongo import users_col
 
 # Colors
-BG_OUTSIDE   = "#FFF0FA"
+BG_OUTSIDE   = "#FFF0F8"
 BG_CARD      = "#FFFFFF"
-ACCENT_PINK  = "#F48FB1"
+ACCENT_PINK  = "#F7A8C4"
 
 def create_leaderboard_tab(parent, username):
     """Leaderboard tab showing users ranked by points earned with medals for top 3."""
@@ -23,7 +23,7 @@ def create_leaderboard_tab(parent, username):
     card_container = tk.Frame(leaderboard_frame, bg=BG_OUTSIDE)
     card_container.pack(fill="both", expand=True, padx=20, pady=10)
 
-    medals = {0: "😺🥇", 1: "😸🥈", 2: "😻🥉"}
+    medals = {0: "😺 1st", 1: "😸 2nd", 2: "😻 3rd"}
 
     def load_rankings():
         # Clear old rankings
@@ -40,8 +40,8 @@ def create_leaderboard_tab(parent, username):
 
         for i, (user, points) in enumerate(rankings):
             # Highlight current user
-            bg_color = "#FFE4F0" if user == username else "#FFF5FB"
-            fg_color = "#C2185B" if user == username else "#555555"
+            bg_color = "#FFD6EC" if user == username else "#FFF0F8"
+            fg_color = "#2C3E6B" if user == username else "#555577"
 
             frame = tk.Frame(card_container, bg=bg_color, padx=10, pady=6, relief="flat", bd=0)
             frame.pack(fill="x", pady=4)
@@ -63,11 +63,11 @@ def create_leaderboard_tab(parent, username):
     # Refresh button
     refresh_btn = tk.Button(
         leaderboard_frame,
-        text="🐱 Refresh",
+        text="🐾 Refresh Rankings",
         command=load_rankings,
         bg="#F9A8C9",
-        fg="white",
-        relief="flat",
+        fg="#FFFFFF",
+        relief="groove",
         padx=20,
         pady=6,
         cursor="hand2"

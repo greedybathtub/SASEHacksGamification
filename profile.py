@@ -3,36 +3,36 @@ from tkinter import messagebox
 from addMongo import users_col  # MongoDB Users collection
 
 def create_profile_tab(parent, username):
-    profile_frame = tk.Frame(parent, bg="#FFF0FA")
+    profile_frame = tk.Frame(parent, bg="#FFF0F8")
 
-    tk.Label(profile_frame, text=f"🐱 {username}'s Paws & Pages Profile 🐾", font=("Arial", 14), bg="#FFF0FA", fg="#F48FB1").pack(pady=10)
+    tk.Label(profile_frame, text=f"🐱 {username}'s Paws & Pages Profile 🐾", font=("Arial", 14), bg="#FFF0F8", fg="#F7A8C4").pack(pady=10)
 
     # Read-only fields for points and hours
-    tk.Label(profile_frame, text="Points Earned:").pack(anchor='w', padx=10)
+    tk.Label(profile_frame, text="Points Earned:", bg="#FFF0F8", fg="#C0608A").pack(anchor='w', padx=10)
     points_var = tk.StringVar(value="0")
     points_entry = tk.Entry(profile_frame, textvariable=points_var, width=10, state='readonly')
     points_entry.pack(padx=10, pady=5, anchor='w')
 
-    tk.Label(profile_frame, text="Hours Logged:").pack(anchor='w', padx=10)
+    tk.Label(profile_frame, text="Hours Logged:", bg="#FFF0F8", fg="#C0608A").pack(anchor='w', padx=10)
     hours_var = tk.StringVar(value="0")
     hours_entry = tk.Entry(profile_frame, textvariable=hours_var, width=10, state='readonly')
     hours_entry.pack(padx=10, pady=5, anchor='w')
 
     # Editable profile fields
-    tk.Label(profile_frame, text="School:").pack(anchor='w', padx=10)
+    tk.Label(profile_frame, text="School:", bg="#FFF0F8", fg="#C0608A").pack(anchor='w', padx=10)
     school_entry = tk.Entry(profile_frame, width=50)
     school_entry.pack(padx=10, pady=5)
 
-    tk.Label(profile_frame, text="Bio:").pack(anchor='w', padx=10)
+    tk.Label(profile_frame, text="Bio:", bg="#FFF0F8", fg="#C0608A").pack(anchor='w', padx=10)
     bio_text = tk.Text(profile_frame, width=50, height=5)
     bio_text.pack(padx=10, pady=5)
 
-    tk.Label(profile_frame, text="Subjects of Interest (comma-separated):").pack(anchor='w', padx=10)
+    tk.Label(profile_frame, text="Subjects of Interest (comma-separated):", bg="#FFF0F8", fg="#C0608A").pack(anchor='w', padx=10)
     subjects_entry = tk.Entry(profile_frame, width=50)
     subjects_entry.pack(padx=10, pady=5)
 
     # Group Study Preferences Quiz
-    tk.Label(profile_frame, text="Group Study Preferences Quiz:", font=("Arial", 12, "bold")).pack(pady=10)
+    tk.Label(profile_frame, text="Group Study Preferences Quiz:", font=("Arial", 12, "bold"), bg="#FFF0F8", fg="#C0608A").pack(pady=10)
     quiz_frame = tk.Frame(profile_frame)
     quiz_frame.pack(padx=10, pady=5)
 
@@ -98,6 +98,6 @@ def create_profile_tab(parent, username):
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save profile: {e}")
 
-    tk.Button(profile_frame, text="🐾 Save Profile", command=save_profile, bg="#F9A8C9", fg="white", relief="flat", padx=20, pady=6, cursor="hand2").pack(pady=10)
+    tk.Button(profile_frame, text="🐾 Save My Profile", command=save_profile, bg="#F9A8C9", fg="#FFFFFF", relief="groove", padx=20, pady=8, cursor="hand2", font=("Arial", 10, "bold")).pack(pady=10)
 
     return profile_frame

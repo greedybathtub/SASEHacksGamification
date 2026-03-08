@@ -3,9 +3,9 @@ from tkinter import messagebox
 from addMongo import users_col  # MongoDB Users collection
 
 def create_match_tab(parent, username):
-    match_frame = tk.Frame(parent, bg="#FFF0FA")
+    match_frame = tk.Frame(parent, bg="#FFF0F8")
 
-    tk.Label(match_frame, text="🐾 Find Your Study Buddy! =^.^=", font=("Arial", 14), bg="#FFF0FA", fg="#F48FB1").pack(pady=10)
+    tk.Label(match_frame, text="🐾 Find Your Study Buddy! =^.^=", font=("Arial", 14), bg="#FFF0F8", fg="#F7A8C4").pack(pady=10)
 
     # Load all users except current
     other_users_cursor = users_col.find({"_id": {"$ne": username}})
@@ -19,7 +19,7 @@ def create_match_tab(parent, username):
     unmatched_users = [u for u in other_users if u["_id"] not in existing_matches]
 
     if not unmatched_users:
-        tk.Label(match_frame, text="No other users found.").pack(pady=20)
+        tk.Label(match_frame, text="😿 No other kitties found yet...", bg="#FFF0F8", fg="#888").pack(pady=20)
         return match_frame
 
     profile_index = tk.IntVar(value=0)
@@ -99,8 +99,8 @@ def create_match_tab(parent, username):
     btn_frame = tk.Frame(match_frame)
     btn_frame.pack(pady=10)
 
-    tk.Button(btn_frame, text="😾 Pass", command=skip, width=15, bg="#FFABAB", fg="white", relief="flat", cursor="hand2").pack(side="right", padx=10)
-    tk.Button(btn_frame, text="😻 Match!", command=match, width=15, bg="#B5EAD7", fg="#2e7d52", relief="flat", cursor="hand2").pack(side="left", padx=10)
+    tk.Button(btn_frame, text="😾 Nope!", command=skip, width=15, bg="#F7C8C8", fg="#7B2222", relief="groove", cursor="hand2", font=("Arial", 10, "bold")).pack(side="right", padx=10)
+    tk.Button(btn_frame, text="😻 Paw-some!", command=match, width=15, bg="#F9A8C9", fg="#FFFFFF", relief="groove", cursor="hand2", font=("Arial", 10, "bold")).pack(side="left", padx=10)
 
     load_profile(profile_index.get())
 

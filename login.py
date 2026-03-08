@@ -4,15 +4,15 @@ import tkinter.font as tkfont
 from mainwindow import open_main_window
 import addMongo
 
-# ── colors ─────────────────────────────────────────────────────────────
-BG_OUTER  = "#FFF0FA"
-BG_CARD   = "#FFFFFF"
-PINK      = "#F48FB1"
-INPUT_BG  = "#FFF5FB"
-INPUT_FG  = "#D4728A"
-BTN_BG    = "#F9A8C9"
-BTN_FG    = "#FFFFFF"
-BTN_HOV   = "#F06292"
+#  colors 
+BG_OUTER  = "#FFD6EC"   # pastel pink outer background
+BG_CARD   = "#FFFFFF"   # white card
+PINK      = "#F07AB0"   # hot pink accent
+INPUT_BG  = "#FFF0F8"   # very light pink input
+INPUT_FG  = "#C0608A"   # deep pink input text
+BTN_BG    = "#F9A8C9"   # pastel pink button
+BTN_FG    = "#FFFFFF"   # white button text
+BTN_HOV   = "#F07AB0"   # deeper pink hover
 
 PIXEL_FONTS = ["Press Start 2P", "Courier New", "Courier", "monospace"]
 
@@ -23,7 +23,7 @@ def best_font(families, size, weight="normal"):
             return (f, size, weight)
     return (families[-1], size, weight)
 
-# ── MongoDB auth helpers ────────────────────────────────────────────────
+#  MongoDB auth helpers 
 def verify(username, password):
     user = addMongo.login_col.find_one({"_id": username})
     return user is not None and user.get("password") == password
@@ -31,14 +31,14 @@ def verify(username, password):
 def username_exists(username):
     return addMongo.login_col.find_one({"_id": username}) is not None
 
-# ── hover effect for button ─────────────────────────────────────────────
+#  hover effect for button 
 def on_enter(e, btn):
     btn.config(bg=BTN_HOV)
 
 def on_leave(e, btn):
     btn.config(bg=BTN_BG)
 
-# ── create-account window ──────────────────────────────────────────────
+#  createaccount window 
 def create_account_window(parent):
     win = tk.Toplevel(parent)
     win.title("🐾 Paws & Pages — New Account")
@@ -52,7 +52,7 @@ def create_account_window(parent):
     title_font = best_font(PIXEL_FONTS, 11, "bold")
     entry_font = best_font(["Nunito", "Helvetica Neue", "Helvetica"], 11)
 
-    tk.Label(card, text="🐱 NEW ACCOUNT 🐱", font=title_font,
+    tk.Label(card, text="🐾 NEW ACCOUNT 🐾", font=title_font,
              fg=PINK, bg=BG_CARD).pack(pady=(22, 16))
 
     def make_entry(parent, placeholder, show=None):
@@ -66,7 +66,7 @@ def create_account_window(parent):
         def on_focus_in(ev, entry=e, ph=placeholder):
             if entry.get() == ph:
                 entry.delete(0, "end")
-                entry.config(fg="#4a6a85")
+                entry.config(fg="#C0608A")
                 if show:
                     entry.config(show=show)
 
@@ -126,7 +126,7 @@ def create_account_window(parent):
     save_btn.bind("<Enter>", lambda e: on_enter(e, save_btn))
     save_btn.bind("<Leave>", lambda e: on_leave(e, save_btn))
 
-# ── main login window ────────────────────────────────────────────────────
+#  main login window 
 def build_main():
     window = tk.Tk()
     window.title("🐾 Paws & Pages")
@@ -139,12 +139,12 @@ def build_main():
     card.place(relx=0.5, rely=0.5, anchor="center", width=card_w, height=card_h)
 
     title_font = best_font(PIXEL_FONTS, 26, "bold")
-    tk.Label(card, text="=^.^=", font=best_font(PIXEL_FONTS, 18, "bold"),
-             fg="#FFB6C1", bg=BG_CARD).pack(pady=(30, 0))
+    tk.Label(card, text="≽^•⩊•^≼", font=best_font(PIXEL_FONTS, 18, "bold"),
+             fg="#F9A8C9", bg=BG_CARD).pack(pady=(30, 0))
     tk.Label(card, text="Paws & Pages", font=title_font,
              fg=PINK, bg=BG_CARD).pack(pady=(0, 6))
-    tk.Label(card, text="your study companion 🐱", font=best_font(["Nunito","Helvetica"],10),
-             fg="#C06080", bg=BG_CARD).pack(pady=(0, 20))
+    tk.Label(card, text="~ your purr-fect study companion ~", font=best_font(["Nunito","Helvetica"],10),
+             fg="#7A9EC8", bg=BG_CARD).pack(pady=(0, 20))
 
     entry_font = best_font(["Nunito", "Helvetica Neue", "Helvetica"], 13)
     entries = {}
@@ -161,7 +161,7 @@ def build_main():
         def focus_in(ev, entry=e, ph=placeholder):
             if entry.get() == ph:
                 entry.delete(0, "end")
-                entry.config(fg="#2d5578")
+                entry.config(fg="#C0608A")
                 if show:
                     entry.config(show=show)
 
@@ -205,7 +205,7 @@ def build_main():
     login_btn.bind("<Leave>", lambda e: on_leave(e, login_btn))
 
     link_font = best_font(["Nunito", "Helvetica Neue", "Helvetica"], 9)
-    link = tk.Label(card, text="🐱 New here? Create an Account!",
+    link = tk.Label(card, text="🐾 New here? Join the clowder!",
                     font=link_font, fg=PINK, bg=BG_CARD, cursor="hand2")
     link.pack(pady=(14, 0))
     link.bind("<Button-1>", lambda e: create_account_window(window))

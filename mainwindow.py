@@ -10,11 +10,13 @@ import os
 import sys
 from chatbot import create_chatbot_tab
 
-# ── colors & fonts ─────────────────────────────────────────────────────────────
-BG_OUTER  = "#FFF0FA"
-BG_CARD   = "#FFFFFF"
-ACCENT    = "#F48FB1"
-BTN_HOV   = "#F06292"
+#  colors & fonts 
+BG_OUTER  = "#FFF0F8"   # soft pink outer
+BG_CARD   = "#FFFFFF"   # white cards
+ACCENT    = "#F9A8C9"   # pastel pink accent
+BTN_HOV   = "#F07AB0"   # deeper pink hover
+TAB_PINK  = "#F9C8DF"   # tab unselected pink
+TAB_BLUE  = "#A8C8F7"   # tab selected blue
 PIXEL_FONTS = ["Press Start 2P", "Courier New", "Courier", "monospace"]
 
 def best_font(families, size, weight="normal"):
@@ -31,58 +33,84 @@ def open_main_window(username):
     main_window.geometry("820x620")
     main_window.configure(bg=BG_OUTER)
 
-    title_font = best_font(PIXEL_FONTS, 18, "bold")
-    tab_font   = best_font(["Nunito", "Helvetica Neue", "Arial"], 10, "bold")
+    tab_font = best_font(["Nunito", "Helvetica Neue", "Arial"], 10, "bold")
 
-    # ── Top frame for welcome & logout ─────────────────────────────────
+    #  Style notebook tabs BEFORE creating notebook 
+    style = ttk.Style()
+    style.theme_use("default")
+    style.configure("TNotebook",
+        background=BG_OUTER,
+        borderwidth=0,
+        tabmargins=[4, 4, 0, 0]
+    )
+    style.configure("TNotebook.Tab",
+        background=TAB_PINK,
+        foreground="#3A2A3A",
+        font=("Helvetica", 10, "bold"),
+        padding=[14, 7],
+        borderwidth=1,
+        relief="raised"
+    )
+    style.map("TNotebook.Tab",
+        background=[("selected", TAB_BLUE), ("active", "#FFD6EC")],
+        foreground=[("selected", "#1A2C6B"), ("active", "#3A2A3A")],
+        relief=[("selected", "flat")]
+    )
+    style.configure("TFrame", background=BG_OUTER)
+
+    #  Top frame for welcome & logout 
     top_frame = tk.Frame(main_window, bg=BG_OUTER)
-    top_frame.pack(fill="x", padx=20, pady=(20,10))
+    top_frame.pack(fill="x", padx=20, pady=(20, 10))
 
-    welcome_card = tk.Frame(top_frame, bg=BG_CARD, padx=15, pady=10, relief="raised", bd=2)
+    welcome_card = tk.Frame(top_frame, bg=BG_CARD, padx=20, pady=12, relief="groove", bd=2)
     welcome_card.pack(side="left", fill="x", expand=True)
 
     tk.Label(
         welcome_card,
-        text=f"🐾 Paws & Pages  ·  Welcome, {username}! =^.^=",
-        font=title_font,
+        text="≽^•⩊•^≼   Paws & Pages",
+        font=best_font(PIXEL_FONTS, 20, "bold"),
+        bg=BG_CARD,
+        fg=TAB_BLUE
+    ).pack(anchor="w")
+
+    tk.Label(
+        welcome_card,
+        text=f"🐾 nyaa, welcome back {username}! ♡",
+        font=best_font(["Nunito", "Helvetica Neue", "Arial"], 11),
         bg=BG_CARD,
         fg=ACCENT
-    ).pack()
+    ).pack(anchor="w")
 
-    # ── Logout button in top-right ─────────────────────────────────────
+    #  Logout button 
     def logout():
         main_window.destroy()
-        sys.exit()  # fully exit program
+        sys.exit()
 
     logout_btn = tk.Button(
         top_frame,
         text="👋 Logout",
         command=logout,
-        bg="#F9A8C9",
-        fg="white",
+        bg=TAB_PINK,
+        fg="#3A2A3A",
         font=tab_font,
-        padx=16,
-        pady=8,
-        relief="flat",
+        padx=20,
+        pady=10,
+        relief="groove",
         cursor="hand2",
         activebackground=BTN_HOV,
         activeforeground="white"
     )
-    logout_btn.pack(side="right")
+    logout_btn.pack(side="right", padx=(16, 0))
 
-    def on_enter(e):
-        logout_btn.config(bg=BTN_HOV)
-    def on_leave(e):
-        logout_btn.config(bg=ACCENT)
-
+    def on_enter(e): logout_btn.config(bg=BTN_HOV, fg="white")
+    def on_leave(e): logout_btn.config(bg=TAB_PINK, fg="#3A2A3A")
     logout_btn.bind("<Enter>", on_enter)
     logout_btn.bind("<Leave>", on_leave)
 
-    # ── Notebook / Tabs ───────────────────────────────────────────────
-    notebook = ttk.Notebook(main_window)
-    notebook.pack(expand=True, fill="both", padx=20, pady=(0,20))
+    #  Notebook / Tabs 
+    notebook = ttk.Notebook(main_window, style="TNotebook")
+    notebook.pack(expand=True, fill="both", padx=20, pady=(0, 20))
 
-    # ── Helper to wrap tabs in a card-style frame ──────────────────────
     def wrap_tab(tab_func):
         container = tk.Frame(notebook, bg=BG_OUTER)
         card = tk.Frame(container, bg=BG_CARD, padx=10, pady=10)
@@ -92,11 +120,11 @@ def open_main_window(username):
         return container
 
     notebook.add(wrap_tab(create_leaderboard_tab), text="🏆 Leaderboard")
-    notebook.add(wrap_tab(create_profile_tab), text="🐱 Profile")
-    notebook.add(wrap_tab(create_match_tab), text="🐾 Study Match")
-    notebook.add(wrap_tab(create_messages_tab), text="💌 Messages")
-    notebook.add(wrap_tab(create_quests_tab), text="📋 Quests")
-    notebook.add(wrap_tab(create_log_hours_tab), text="⏱️ Log Hours")
-    notebook.add(wrap_tab(create_chatbot_tab), text="Chatbot")
+    notebook.add(wrap_tab(create_profile_tab),      text="🐱 Profile")
+    notebook.add(wrap_tab(create_match_tab),         text="🐾 Study Match")
+    notebook.add(wrap_tab(create_messages_tab),      text="💌 Messages")
+    notebook.add(wrap_tab(create_quests_tab),        text="📋 Quests")
+    notebook.add(wrap_tab(create_log_hours_tab),     text="⏱️ Log Hours")
+    notebook.add(wrap_tab(create_chatbot_tab),       text="🐈 Pawsy AI")
 
     main_window.mainloop()
