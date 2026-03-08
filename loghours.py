@@ -48,7 +48,7 @@ def create_log_hours_tab(parent, username):
         except ValueError:
             messagebox.showerror("Error", "Enter a valid positive number of hours.")
 
-    tk.Button(log_hours_frame, text="🐱 Add Hours", command=add_hours,
+    tk.Button(log_hours_frame, text="🐱 Add Hours", command=pointshelpers.add_hours,
               bg="#F9A8C9", fg="white", relief="flat", padx=20, pady=6, cursor="hand2").pack(pady=10)
 
     return log_hours_frame
