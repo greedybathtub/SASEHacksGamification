@@ -1,3 +1,0 @@
-test: I want to study with you
-user1: Ok! How does 5 pm sounds?
-test: Okay! Do you want to meet in the library??

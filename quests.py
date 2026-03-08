@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
-import os
 import random
-import pointshelpers
+from addMongo import users_col  # MongoDB Users collection
 
 QUEST_POOL = [
     {"task": "Finish 1 LeetCode problem",          "points_reward": 10, "icon": "💻"},
@@ -26,16 +25,15 @@ def create_quests_tab(parent, username):
     tk.Label(frame, text="📋 STUDY QUESTS", font=("Arial", 14, "bold")).pack(pady=(10,2))
     tk.Label(frame, text="Complete quests to earn Points!", font=("Arial", 10)).pack(pady=(0,10))
 
-    user_file = os.path.join("userInfo", f"{username}.txt")
-
-    total_points = pointshelpers.get_points(user_file)
+    # Load total points from MongoDB
+    user_doc = users_col.find_one({"_id": username})
+    total_points = user_doc.get("pointsEarned", 0) if user_doc else 0
 
     points_label = tk.Label(frame, text=f"Total Points: {total_points}", font=("Arial", 12, "bold"))
     points_label.pack(pady=(0,10))
 
     quest_container = tk.Frame(frame)
     quest_container.pack(fill="both", expand=True)
-
 
     def build_quest_card(parent, quest):
 
@@ -62,16 +60,20 @@ def create_quests_tab(parent, username):
         complete_btn = tk.Button(card, text="Complete ✓", bg="green", fg="white")
         complete_btn.pack(side="right", padx=6)
 
-
         def complete():
-
             # Disable immediately to prevent double clicks
             complete_btn.config(state="disabled")
 
-            pointshelpers.add_points(user_file, quest["points_reward"])
+            # Add points in MongoDB
+            users_col.update_one(
+                {"_id": username},
+                {"$inc": {"pointsEarned": quest["points_reward"]}},
+                upsert=True
+            )
 
-            total = pointshelpers.get_points(user_file)
-            points_label.config(text=f"Total Points: {total}")
+            # Reload total points
+            new_total = users_col.find_one({"_id": username}).get("pointsEarned", 0)
+            points_label.config(text=f"Total Points: {new_total}")
 
             # Mark quest completed visually
             task_label.config(fg="gray")
@@ -82,8 +84,8 @@ def create_quests_tab(parent, username):
                 "Quest Complete! 🎉",
                 f"You earned +{quest['points_reward']} Points!\n{quest['task']}"
             )
-        complete_btn.config(command=complete)
 
+        complete_btn.config(command=complete)
 
     def load_quests():
 
@@ -94,7 +96,6 @@ def create_quests_tab(parent, username):
 
         for quest in selected:
             build_quest_card(quest_container, quest)
-
 
     load_quests()
 
