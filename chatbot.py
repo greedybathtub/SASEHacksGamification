@@ -1,8 +1,8 @@
+#  chatbot.py - A playful cat-themed AI assistant using Google Gemini API and Tkinter GUI
 import tkinter as tk
 import threading
 import google.generativeai as genai
 
-#  Gemini API & chatbot setup
 GEMINI_API_KEY = "AIzaSyDm8MaBxXTzXPbiK2rCeixtmozE7oAtboo"
 SYSTEM = """You are Meow, a cat-themed AI assistant. Every response must include 
 at least one cat pun. Be playful, warm, and fun. Keep responses short (2-3 sentences). 
@@ -12,21 +12,20 @@ model = genai.GenerativeModel("gemini-2.5-pro", system_instruction=SYSTEM)
 chat = model.start_chat()
 
 #  palette 
-CHAT_BG  = "#FFE8F4"   # soft pastel pink chat background
-BOT_BG   = "#FFFFFF"   # white bot bubbles
-USER_BG  = "#D6E8FF"   # pastel blue user bubbles
-BORDER   = "#F0A8CC"   # pink border
-BTN_PINK = "#F9A8C9"   # pink send button
-TXT      = "#2C2C3E"   # dark navy text
-GRAY     = "#C8A8B8"   # muted placeholder
-OUTER_BG = "#FFF0F8"   # outer frame bg
+CHAT_BG  = "#FFE8F4"   
+BOT_BG   = "#FFFFFF"   
+USER_BG  = "#D6E8FF"   
+BORDER   = "#F0A8CC"   
+BTN_PINK = "#F9A8C9"   
+TXT      = "#2C2C3E"  
+GRAY     = "#C8A8B8"  
+OUTER_BG = "#FFF0F8"  
 
 class PawsyChatbot:
     def __init__(self, parent):
         self.root_frame = tk.Frame(parent, bg=OUTER_BG)
         self.root_frame.pack(fill="both", expand=True, padx=10, pady=10)
-
-        #  header bar 
+ 
         header = tk.Frame(self.root_frame, bg=BTN_PINK, pady=8)
         header.pack(fill="x")
         tk.Label(header, text="≽^•⩊•^≼  Pawsy AI  🐾",
@@ -36,7 +35,6 @@ class PawsyChatbot:
                  bg=BTN_PINK, fg="#7A3A5A",
                  font=("Helvetica", 9, "italic")).pack()
 
-        #  chat display area 
         chat_frame = tk.Frame(self.root_frame, bg=CHAT_BG)
         chat_frame.pack(fill="both", expand=True)
         canvas = tk.Canvas(chat_frame, bg=CHAT_BG, highlightthickness=0)
@@ -48,7 +46,6 @@ class PawsyChatbot:
             lambda e: [canvas.configure(scrollregion=canvas.bbox("all")), canvas.yview_moveto(1.0)]
         )
 
-        #  bottom input frame 
         bottom = tk.Frame(self.root_frame, bg=BTN_PINK, pady=8)
         bottom.pack(fill="x")
         ef = tk.Frame(bottom, bg=BOT_BG, highlightthickness=2, highlightbackground=BORDER)
@@ -60,8 +57,7 @@ class PawsyChatbot:
         self.entry.bind("<FocusIn>",  lambda e: (self.entry.delete(0, "end"), self.entry.config(fg=TXT)) if self.entry.get() == "Ask Meow Anything..." else None)
         self.entry.bind("<FocusOut>", lambda e: (self.entry.insert(0, "Ask Meow Anything..."), self.entry.config(fg=GRAY)) if not self.entry.get() else None)
         self.entry.bind("<Return>", lambda e: self.send_message())
-
-        #  send button 
+ 
         bf = tk.Frame(bottom, bg="#F07AB0", width=48, height=48)
         bf.pack(side="right", padx=(0, 10))
         bf.pack_propagate(False)
@@ -70,7 +66,6 @@ class PawsyChatbot:
                   cursor="hand2", activebackground=BORDER,
                   command=self.send_message).pack(expand=True, fill="both")
 
-        #  initial greeting 
         self.add_bubble("So purr-leased to meowt you! My name is Pawsy! How can I help?", True)
 
     def add_bubble(self, text, is_bot):
@@ -106,8 +101,6 @@ class PawsyChatbot:
 
         threading.Thread(target=fetch, daemon=True).start()
 
-
-#  function to create the tab 
 def create_chatbot_tab(parent, username=None):
     """Call this to add the chatbot tab inside any parent frame"""
     return PawsyChatbot(parent).root_frame

@@ -1,18 +1,19 @@
+# login.py - Handles user authentication and account creation for Paws & Pages.
 import tkinter as tk
 from tkinter import messagebox
 import tkinter.font as tkfont
 from mainwindow import open_main_window
 import addMongo
 
-#  colors 
-BG_OUTER  = "#FFD6EC"   # pastel pink outer background
-BG_CARD   = "#FFFFFF"   # white card
-PINK      = "#F07AB0"   # hot pink accent
-INPUT_BG  = "#FFF0F8"   # very light pink input
-INPUT_FG  = "#C0608A"   # deep pink input text
-BTN_BG    = "#F9A8C9"   # pastel pink button
-BTN_FG    = "#FFFFFF"   # white button text
-BTN_HOV   = "#F07AB0"   # deeper pink hover
+
+BG_OUTER  = "#FFD6EC"   
+BG_CARD   = "#FFFFFF"   
+PINK      = "#F07AB0"   
+INPUT_BG  = "#FFF0F8"   
+INPUT_FG  = "#C0608A"   
+BTN_BG    = "#F9A8C9"   
+BTN_FG    = "#FFFFFF"   
+BTN_HOV   = "#F07AB0"   
 
 PIXEL_FONTS = ["Press Start 2P", "Courier New", "Courier", "monospace"]
 
@@ -23,22 +24,19 @@ def best_font(families, size, weight="normal"):
             return (f, size, weight)
     return (families[-1], size, weight)
 
-#  MongoDB auth helpers 
 def verify(username, password):
     user = addMongo.login_col.find_one({"_id": username})
     return user is not None and user.get("password") == password
 
 def username_exists(username):
     return addMongo.login_col.find_one({"_id": username}) is not None
-
-#  hover effect for button 
+ 
 def on_enter(e, btn):
     btn.config(bg=BTN_HOV)
 
 def on_leave(e, btn):
     btn.config(bg=BTN_BG)
 
-#  createaccount window 
 def create_account_window(parent):
     win = tk.Toplevel(parent)
     win.title("🐾 Paws & Pages — New Account")
@@ -93,10 +91,8 @@ def create_account_window(parent):
             messagebox.showerror("Error", "Username already exists.", parent=win)
             return
 
-        # Save login info
         addMongo.login_col.insert_one({"_id": uname, "password": pword})
 
-        # Save empty user profile in user_col
         addMongo.users_col.insert_one({
             "_id": uname,
             "PointsEarned": 0,
@@ -125,8 +121,7 @@ def create_account_window(parent):
     save_btn.pack(pady=20)
     save_btn.bind("<Enter>", lambda e: on_enter(e, save_btn))
     save_btn.bind("<Leave>", lambda e: on_leave(e, save_btn))
-
-#  main login window 
+ 
 def build_main():
     window = tk.Tk()
     window.title("🐾 Paws & Pages")

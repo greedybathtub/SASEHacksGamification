@@ -1,21 +1,19 @@
+# studyMatch.py - Study Buddy Matching Tab
 import tkinter as tk
 from tkinter import messagebox
-from addMongo import users_col  # MongoDB Users collection
+from addMongo import users_col
 
 def create_match_tab(parent, username):
     match_frame = tk.Frame(parent, bg="#FFF0F8")
 
     tk.Label(match_frame, text="🐾 Find Your Study Buddy! =^.^=", font=("Arial", 14), bg="#FFF0F8", fg="#F7A8C4").pack(pady=10)
 
-    # Load all users except current
     other_users_cursor = users_col.find({"_id": {"$ne": username}})
     other_users = list(other_users_cursor)
 
-    # Load current user's matches to skip already matched users
     current_user_doc = users_col.find_one({"_id": username})
     existing_matches = current_user_doc.get("matches", []) if current_user_doc else []
 
-    # Filter out users already matched
     unmatched_users = [u for u in other_users if u["_id"] not in existing_matches]
 
     if not unmatched_users:
@@ -27,7 +25,6 @@ def create_match_tab(parent, username):
     profile_display = tk.Frame(match_frame)
     profile_display.pack(pady=20)
 
-    # UI Labels
     compatibility_label = tk.Label(profile_display, text="", font=("Arial", 12, "bold"))
     compatibility_label.pack()
     username_label = tk.Label(profile_display, text="", font=("Arial", 12, "bold"))
@@ -47,7 +44,6 @@ def create_match_tab(parent, username):
     group_size_label = tk.Label(profile_display, text="")
     group_size_label.pack()
 
-    # Current user's quiz data
     current_user_data = {
         "StudyStyle": current_user_doc.get("studyStyle", "") if current_user_doc else "",
         "StudyTime": current_user_doc.get("studyTime", "") if current_user_doc else "",
@@ -79,7 +75,6 @@ def create_match_tab(parent, username):
         group_size_label.config(text=f"Group Size: {other_user_doc.get('groupSize','')}")
 
     def save_match(matched_user):
-        # Update matches array in MongoDB for current user
         users_col.update_one(
             {"_id": username},
             {"$addToSet": {"matches": matched_user}}

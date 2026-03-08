@@ -1,13 +1,13 @@
+# profile.py - This file defines the user profile tab in the GUI, allowing users to view and edit their profile information, including points, hours, school, bio, subjects, and group study preferences.
 import tkinter as tk
 from tkinter import messagebox
-from addMongo import users_col  # MongoDB Users collection
+from addMongo import users_col
 
 def create_profile_tab(parent, username):
     profile_frame = tk.Frame(parent, bg="#FFF0F8")
 
     tk.Label(profile_frame, text=f"🐱 {username}'s Paws & Pages Profile 🐾", font=("Arial", 14), bg="#FFF0F8", fg="#F7A8C4").pack(pady=10)
 
-    # Read-only fields for points and hours
     tk.Label(profile_frame, text="Points Earned:", bg="#FFF0F8", fg="#C0608A").pack(anchor='w', padx=10)
     points_var = tk.StringVar(value="0")
     points_entry = tk.Entry(profile_frame, textvariable=points_var, width=10, state='readonly')
@@ -18,7 +18,6 @@ def create_profile_tab(parent, username):
     hours_entry = tk.Entry(profile_frame, textvariable=hours_var, width=10, state='readonly')
     hours_entry.pack(padx=10, pady=5, anchor='w')
 
-    # Editable profile fields
     tk.Label(profile_frame, text="School:", bg="#FFF0F8", fg="#C0608A").pack(anchor='w', padx=10)
     school_entry = tk.Entry(profile_frame, width=50)
     school_entry.pack(padx=10, pady=5)
@@ -31,26 +30,22 @@ def create_profile_tab(parent, username):
     subjects_entry = tk.Entry(profile_frame, width=50)
     subjects_entry.pack(padx=10, pady=5)
 
-    # Group Study Preferences Quiz
     tk.Label(profile_frame, text="Group Study Preferences Quiz:", font=("Arial", 12, "bold"), bg="#FFF0F8", fg="#C0608A").pack(pady=10)
     quiz_frame = tk.Frame(profile_frame)
     quiz_frame.pack(padx=10, pady=5)
 
-    # Study style
     tk.Label(quiz_frame, text="1. Preferred study style:").grid(row=0, column=0, sticky='w')
     study_style_var = tk.StringVar(value="Group")
     tk.Radiobutton(quiz_frame, text="Quiet group", variable=study_style_var, value="Quiet group").grid(row=0, column=1)
     tk.Radiobutton(quiz_frame, text="Active discussion", variable=study_style_var, value="Active discussion").grid(row=0, column=2)
     tk.Radiobutton(quiz_frame, text="Either", variable=study_style_var, value="Either").grid(row=0, column=3)
 
-    # Study time
     tk.Label(quiz_frame, text="2. Preferred study time:").grid(row=1, column=0, sticky='w')
     study_time_var = tk.StringVar(value="Afternoon")
     tk.Radiobutton(quiz_frame, text="Morning", variable=study_time_var, value="Morning").grid(row=1, column=1)
     tk.Radiobutton(quiz_frame, text="Afternoon", variable=study_time_var, value="Afternoon").grid(row=1, column=2)
     tk.Radiobutton(quiz_frame, text="Evening", variable=study_time_var, value="Evening").grid(row=1, column=3)
 
-    # Study location
     tk.Label(quiz_frame, text="3. Preferred study location:").grid(row=2, column=0, sticky='w')
     study_location_var = tk.StringVar(value="Library")
     tk.Radiobutton(quiz_frame, text="Library", variable=study_location_var, value="Library").grid(row=2, column=1)
@@ -58,14 +53,12 @@ def create_profile_tab(parent, username):
     tk.Radiobutton(quiz_frame, text="Dorm/Room", variable=study_location_var, value="Dorm/Room").grid(row=2, column=3)
     tk.Radiobutton(quiz_frame, text="Either", variable=study_location_var, value="Either").grid(row=2, column=4)
 
-    # Group size
     tk.Label(quiz_frame, text="4. Preferred group size:").grid(row=3, column=0, sticky='w')
     group_size_var = tk.StringVar(value="Small (2-3)")
     tk.Radiobutton(quiz_frame, text="Small (2-3)", variable=group_size_var, value="Small (2-3)").grid(row=3, column=1)
     tk.Radiobutton(quiz_frame, text="Medium (4-6)", variable=group_size_var, value="Medium (4-6)").grid(row=3, column=2)
     tk.Radiobutton(quiz_frame, text="Large (7+)", variable=group_size_var, value="Large (7+)").grid(row=3, column=3)
 
-    # ── Load profile from MongoDB ─────────────────────────────
     doc = users_col.find_one({"_id": username})
     if doc:
         points_var.set(doc.get("pointsEarned", 0))
@@ -78,7 +71,6 @@ def create_profile_tab(parent, username):
         study_location_var.set(doc.get("location", "Library"))
         group_size_var.set(doc.get("groupSize", "Small (2-3)"))
 
-    # ── Save profile to MongoDB ─────────────────────────────
     def save_profile():
         try:
             subjects = [s.strip() for s in subjects_entry.get().split(",") if s.strip()]

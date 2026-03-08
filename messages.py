@@ -1,7 +1,8 @@
+# messages.py - Tab for viewing and sending messages between matched users
 import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime
-from addMongo import users_col, messages_col  # MongoDB collections
+from addMongo import users_col, messages_col  
 
 def create_messages_tab(parent, username):
     messages_frame = tk.Frame(parent, bg="#FFF0F8")
@@ -11,7 +12,6 @@ def create_messages_tab(parent, username):
     chat_list_frame = tk.Frame(messages_frame, bg="#FFF0F8")
     chat_list_frame.pack()
 
-    # ── Helper: get mutual matches from DB ─────────────────────────────
     def get_mutual_matches():
         user_doc = users_col.find_one({"_id": username})
         if not user_doc:
@@ -25,7 +25,6 @@ def create_messages_tab(parent, username):
                 mutual.append(match)
         return mutual
 
-    # ── Open a chat window with a matched user ─────────────────────────
     def open_chat(other_user):
         chat_window = tk.Toplevel()
         chat_window.title(f"🐱 Chat with {other_user}")
@@ -61,7 +60,6 @@ def create_messages_tab(parent, username):
             timestamp = datetime.now().isoformat(timespec="seconds")
             new_msg = {"sender": username, "message": msg_text, "timestamp": timestamp}
 
-            # Update the chat in MongoDB
             messages_col.update_one(
                 {"_id": chat_id},
                 {"$push": {"chat": new_msg}},
@@ -73,7 +71,6 @@ def create_messages_tab(parent, username):
 
         tk.Button(chat_window, text="💌 Send Meow-ssage", command=send_message, bg="#F9A8C9", fg="#FFFFFF", relief="groove", padx=16, pady=6, cursor="hand2", font=("Arial", 10, "bold")).pack(pady=5)
 
-        # Auto-refresh chat every second
         def auto_refresh():
             if chat_window.winfo_exists():
                 load_chat()
@@ -82,7 +79,6 @@ def create_messages_tab(parent, username):
         load_chat()
         auto_refresh()
 
-    # ── Refresh the chat list of mutual matches ────────────────────────
     def refresh_chats():
         for widget in chat_list_frame.winfo_children():
             widget.destroy()
@@ -105,7 +101,7 @@ def create_messages_tab(parent, username):
                     command=lambda u=user: open_chat(u)
                 ).pack(pady=3)
 
-        messages_frame.after(3000, refresh_chats)  # refresh chat list every 3s
+        messages_frame.after(3000, refresh_chats)
 
     refresh_chats()
 

@@ -1,7 +1,8 @@
+# quests.py - Handles the Quests tab of the PAWS & PAGES app
 import tkinter as tk
 from tkinter import messagebox
 import random
-from addMongo import users_col  # MongoDB Users collection
+from addMongo import users_col
 
 QUEST_POOL = [
     {"task": "Finish 1 LeetCode problem",          "points_reward": 10, "icon": "💻"},
@@ -25,7 +26,6 @@ def create_quests_tab(parent, username):
     tk.Label(frame, text="🐾 PAWS & PAGES QUESTS 🐾", font=("Arial", 14, "bold"), bg="#FFF0F8", fg="#5B7DB1").pack(pady=(10,2))
     tk.Label(frame, text="✨ Complete quests to earn Paw Points! 😸", font=("Arial", 10), bg="#FFF0F8", fg="#888").pack(pady=(0,10))
 
-    # Load total points from MongoDB
     user_doc = users_col.find_one({"_id": username})
     total_points = user_doc.get("pointsEarned", 0) if user_doc else 0
 
@@ -62,21 +62,17 @@ def create_quests_tab(parent, username):
         complete_btn.pack(side="right", padx=6)
 
         def complete():
-            # Disable immediately to prevent double clicks
             complete_btn.config(state="disabled")
 
-            # Add points in MongoDB
             users_col.update_one(
                 {"_id": username},
                 {"$inc": {"pointsEarned": quest["points_reward"]}},
                 upsert=True
             )
 
-            # Reload total points
             new_total = users_col.find_one({"_id": username}).get("pointsEarned", 0)
             points_label.config(text=f"🐾 Total Paw Points: {new_total}")
 
-            # Mark quest completed visually
             task_label.config(fg="gray")
             reward_label.config(text="Completed ✓", fg="gray")
             complete_btn.config(text="✓ Done!", bg="#C8EAD7", fg="#2e7d52")
