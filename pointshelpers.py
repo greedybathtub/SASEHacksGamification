@@ -1,41 +1,33 @@
 import os
+import addMongo
 
-def get_points(user_file):
-
-    if not os.path.exists(user_file):
+def get_points(username):
+    user_doc = addMongo.users_col.find_one({"_id": username})
+    if not user_doc or "pointsEarned" not in user_doc:
         return 0
+    return user_doc["pointsEarned"]
 
-    with open(user_file, "r") as f:
-        for line in f:
-            if line.startswith("PointsEarned:"):
-                return int(line.replace("PointsEarned:", "").strip())
+def add_points(username, amount):
+    result = addMongo.users_col.find_one_and_update(
+        {"_id": username},
+        {"$inc": {"pointsEarned": amount}},
+        upsert=True,
+        return_document=True
+    )
+    return result.get("pointsEarned", amount)
 
-    return 0
+def get_hours(username):
+    user_doc = addMongo.users_col.find_one({"_id": username})
+    if not user_doc or "hoursLogged" not in user_doc:
+        return 0
+    return user_doc["hoursLogged"]
 
-
-def add_points(user_file, amount):
-
-    points = get_points(user_file)
-    points += amount
-
-    lines = []
-
-    if os.path.exists(user_file):
-        with open(user_file, "r") as f:
-            lines = f.readlines()
-
-    updated = False
-
-    for i, line in enumerate(lines):
-        if line.startswith("PointsEarned:"):
-            lines[i] = f"PointsEarned:{points}\n"
-            updated = True
-            break
-
-    if not updated:
-        lines.append(f"PointsEarned:{points}\n")
-
-    with open(user_file, "w") as f:
-        f.writelines(lines)
-
-    return points
+def add_hours(username, hours):
+    points_to_add = hours * 5
+    result = addMongo.users_col.find_one_and_update(
+        {"_id": username},
+        {"$inc": {"hoursLogged": hours, "pointsEarned": points_to_add}},
+        upsert=True,
+        return_document=True
+    )
+    return result.get("hoursLogged", 0), result.get("pointsEarned", 0)

@@ -1,3 +1,0 @@
-test test
-user1 12345
-study ineedhelp

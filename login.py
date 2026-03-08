@@ -58,6 +58,17 @@ def create_account_window(parent):
 
     tk.Label(card, text="NEW ACCOUNT", font=title_font,
              fg=PINK, bg=BG_CARD).pack(pady=(22, 16))
+    save_btn = tk.Button(
+        card,
+        text="Create Account",
+        font=best_font(["Nunito", "Helvetica"], 11, "bold"),
+        bg=BTN_BG,
+        fg=BTN_FG,
+        command=save
+    )
+    save_btn.pack(pady=20)
+    save_btn.bind("<Enter>", lambda e: on_enter(e, save_btn))
+    save_btn.bind("<Leave>", lambda e: on_leave(e, save_btn))
 
     def make_entry(parent, placeholder, show=None):
         frame = tk.Frame(parent, bg=INPUT_BG, bd=0)

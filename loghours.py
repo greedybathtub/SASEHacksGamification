@@ -1,27 +1,20 @@
 import tkinter as tk
 from tkinter import messagebox
-import os
-import pointshelpers
-
+from addMongo import users_col  # MongoDB UserInfo collection
 
 def create_log_hours_tab(parent, username):
     log_hours_frame = tk.Frame(parent)
 
     tk.Label(log_hours_frame, text="Log Study Hours", font=("Arial", 14)).pack(pady=10)
 
-    user_file = os.path.join("userInfo", f"{username}.txt")
+    # Fetch current user data from MongoDB
+    user_doc = users_col.find_one({"_id": username})
+    if not user_doc:
+        messagebox.showerror("Error", "User not found in database!")
+        return log_hours_frame
 
-    hours_logged = 0
-
-    # Load existing hours
-    if os.path.exists(user_file):
-        with open(user_file, "r") as f:
-            for line in f:
-                if line.startswith("HoursLogged:"):
-                    hours_logged = float(line.replace("HoursLogged:", "").strip())
-
-    # Get points using helper
-    points = pointshelpers.get_points(user_file)
+    hours_logged = user_doc.get("hoursLogged", 0.0)
+    points = user_doc.get("pointsEarned", 0)
 
     # Display stats
     hours_label = tk.Label(log_hours_frame, text=f"Total Hours Logged: {hours_logged}")
@@ -31,7 +24,6 @@ def create_log_hours_tab(parent, username):
     points_label.pack(pady=5)
 
     tk.Label(log_hours_frame, text="Hours to add:").pack(pady=5)
-
     hours_entry = tk.Entry(log_hours_frame)
     hours_entry.pack(pady=5)
 
@@ -40,42 +32,24 @@ def create_log_hours_tab(parent, username):
 
         try:
             added_hours = float(hours_entry.get())
-
             if added_hours <= 0:
                 raise ValueError
 
             hours_logged += added_hours
-
-            # Add points through helper
             earned_points = int(added_hours * 5)
-            points = pointshelpers.add_points(user_file, earned_points)
+            points += earned_points
 
+            # Update MongoDB
+            users_col.update_one(
+                {"_id": username},
+                {"$set": {"hoursLogged": hours_logged, "pointsEarned": points}}
+            )
+
+            # Update labels
             hours_label.config(text=f"Total Hours Logged: {hours_logged}")
             points_label.config(text=f"Total Points Earned: {points}")
 
-            # Reload file to avoid overwriting points
-            current_lines = []
-            if os.path.exists(user_file):
-                with open(user_file, "r") as f:
-                    current_lines = f.readlines()
-
-            updated_lines = []
-            hours_found = False
-
-            for line in current_lines:
-                if line.startswith("HoursLogged:"):
-                    updated_lines.append(f"HoursLogged: {hours_logged}\n")
-                    hours_found = True
-                else:
-                    updated_lines.append(line)
-
-            if not hours_found:
-                updated_lines.append(f"HoursLogged: {hours_logged}\n")
-
-            with open(user_file, "w") as f:
-                f.writelines(updated_lines)
-
-            messagebox.showinfo("Success", f"{added_hours} hours added!")
+            messagebox.showinfo("Success", f"{added_hours} hours added! ({earned_points} points)")
             hours_entry.delete(0, tk.END)
 
         except:
