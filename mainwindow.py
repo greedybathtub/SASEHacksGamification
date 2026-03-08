@@ -1,3 +1,4 @@
+# mainwindow.py - Main application window with tabs for Paws & Pages
 import tkinter as tk
 from tkinter import ttk
 from profile import create_profile_tab
@@ -10,13 +11,13 @@ import os
 import sys
 from chatbot import create_chatbot_tab
 
-#  colors & fonts 
-BG_OUTER  = "#FFF0F8"   # soft pink outer
-BG_CARD   = "#FFFFFF"   # white cards
-ACCENT    = "#F9A8C9"   # pastel pink accent
-BTN_HOV   = "#F07AB0"   # deeper pink hover
-TAB_PINK  = "#F9C8DF"   # tab unselected pink
-TAB_BLUE  = "#A8C8F7"   # tab selected blue
+
+BG_OUTER  = "#FFF0F8"   
+BG_CARD   = "#FFFFFF"   
+ACCENT    = "#F9A8C9"   
+BTN_HOV   = "#F07AB0"   
+TAB_PINK  = "#F9C8DF"   
+TAB_BLUE  = "#A8C8F7"   
 PIXEL_FONTS = ["Press Start 2P", "Courier New", "Courier", "monospace"]
 
 def best_font(families, size, weight="normal"):
@@ -35,7 +36,6 @@ def open_main_window(username):
 
     tab_font = best_font(["Nunito", "Helvetica Neue", "Arial"], 10, "bold")
 
-    #  Style notebook tabs BEFORE creating notebook 
     style = ttk.Style()
     style.theme_use("default")
     style.configure("TNotebook",
@@ -57,8 +57,7 @@ def open_main_window(username):
         relief=[("selected", "flat")]
     )
     style.configure("TFrame", background=BG_OUTER)
-
-    #  Top frame for welcome & logout 
+ 
     top_frame = tk.Frame(main_window, bg=BG_OUTER)
     top_frame.pack(fill="x", padx=20, pady=(20, 10))
 
@@ -81,7 +80,6 @@ def open_main_window(username):
         fg=ACCENT
     ).pack(anchor="w")
 
-    #  Logout button 
     def logout():
         main_window.destroy()
         sys.exit()
@@ -106,8 +104,7 @@ def open_main_window(username):
     def on_leave(e): logout_btn.config(bg=TAB_PINK, fg="#3A2A3A")
     logout_btn.bind("<Enter>", on_enter)
     logout_btn.bind("<Leave>", on_leave)
-
-    #  Notebook / Tabs 
+ 
     notebook = ttk.Notebook(main_window, style="TNotebook")
     notebook.pack(expand=True, fill="both", padx=20, pady=(0, 20))
 

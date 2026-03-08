@@ -1,3 +1,4 @@
+# pointshelpers.py- they help with the points system, they get the points and hours of a user and they add points and hours to a user
 import os
 import addMongo
 
