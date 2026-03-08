@@ -7,7 +7,8 @@ from loghours import create_log_hours_tab
 from leaderboard import create_leaderboard_tab
 from quests import create_quests_tab
 import os
-import sys  # needed to fully exit
+import sys
+from chatbot import create_chatbot_tab
 
 # ── colors & fonts ─────────────────────────────────────────────────────────────
 BG_OUTER  = "#F5D6A0"
@@ -96,5 +97,6 @@ def open_main_window(username):
     notebook.add(wrap_tab(create_messages_tab), text="Messages")
     notebook.add(wrap_tab(create_quests_tab), text="Quests")
     notebook.add(wrap_tab(create_log_hours_tab), text="Log Hours")
+    notebook.add(wrap_tab(create_chatbot_tab), text="Chatbot")
 
     main_window.mainloop()
