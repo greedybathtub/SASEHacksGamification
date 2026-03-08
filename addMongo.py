@@ -1,7 +1,11 @@
 #Database connection and collection setup for Paws and Pages application
+import os
+from dotenv import load_dotenv
 from pymongo import MongoClient
 
-uri = MONGO_URI
+load_dotenv()
+
+uri = os.getenv("MONGO_URI")
 
 client = MongoClient(uri)
 db = client["PawsandPages"]
