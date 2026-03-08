@@ -3,9 +3,9 @@ from tkinter import messagebox
 from addMongo import users_col  # MongoDB Users collection
 
 def create_profile_tab(parent, username):
-    profile_frame = tk.Frame(parent)
+    profile_frame = tk.Frame(parent, bg="#FFF0FA")
 
-    tk.Label(profile_frame, text=f"User: {username}", font=("Arial", 14)).pack(pady=10)
+    tk.Label(profile_frame, text=f"🐱 {username}'s Paws & Pages Profile 🐾", font=("Arial", 14), bg="#FFF0FA", fg="#F48FB1").pack(pady=10)
 
     # Read-only fields for points and hours
     tk.Label(profile_frame, text="Points Earned:").pack(anchor='w', padx=10)
@@ -98,6 +98,6 @@ def create_profile_tab(parent, username):
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save profile: {e}")
 
-    tk.Button(profile_frame, text="Save Profile", command=save_profile).pack(pady=10)
+    tk.Button(profile_frame, text="🐾 Save Profile", command=save_profile, bg="#F9A8C9", fg="white", relief="flat", padx=20, pady=6, cursor="hand2").pack(pady=10)
 
     return profile_frame

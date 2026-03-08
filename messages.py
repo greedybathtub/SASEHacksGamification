@@ -4,11 +4,11 @@ from datetime import datetime
 from addMongo import users_col, messages_col  # MongoDB collections
 
 def create_messages_tab(parent, username):
-    messages_frame = tk.Frame(parent)
+    messages_frame = tk.Frame(parent, bg="#FFF0FA")
 
-    tk.Label(messages_frame, text="Messages", font=("Arial", 14)).pack(pady=10)
+    tk.Label(messages_frame, text="💌 Paws & Pages Messages 🐱", font=("Arial", 14), bg="#FFF0FA", fg="#F48FB1").pack(pady=10)
 
-    chat_list_frame = tk.Frame(messages_frame)
+    chat_list_frame = tk.Frame(messages_frame, bg="#FFF0FA")
     chat_list_frame.pack()
 
     # ── Helper: get mutual matches from DB ─────────────────────────────
@@ -28,16 +28,17 @@ def create_messages_tab(parent, username):
     # ── Open a chat window with a matched user ─────────────────────────
     def open_chat(other_user):
         chat_window = tk.Toplevel()
-        chat_window.title(f"Chat with {other_user}")
+        chat_window.title(f"🐱 Chat with {other_user}")
         chat_window.geometry("400x400")
+        chat_window.configure(bg="#FFF0FA")
 
         users = sorted([username, other_user])
         chat_id = f"{users[0]}-{users[1]}"
 
-        chat_display = tk.Text(chat_window, state="disabled")
+        chat_display = tk.Text(chat_window, state="disabled", bg="#FFF5FB", fg="#555", relief="flat", padx=8, pady=8)
         chat_display.pack(padx=10, pady=10, fill="both", expand=True)
 
-        entry = tk.Entry(chat_window)
+        entry = tk.Entry(chat_window, bg="#FFF5FB", fg="#C06080", relief="flat", highlightthickness=1, highlightbackground="#F9A8C9")
         entry.pack(fill="x", padx=10, pady=5)
 
         def load_chat():
@@ -70,7 +71,7 @@ def create_messages_tab(parent, username):
             entry.delete(0, tk.END)
             load_chat()
 
-        tk.Button(chat_window, text="Send", command=send_message).pack(pady=5)
+        tk.Button(chat_window, text="💌 Send", command=send_message, bg="#F9A8C9", fg="white", relief="flat", padx=16, pady=6, cursor="hand2").pack(pady=5)
 
         # Auto-refresh chat every second
         def auto_refresh():
@@ -89,13 +90,17 @@ def create_messages_tab(parent, username):
         mutual_matches = get_mutual_matches()
 
         if not mutual_matches:
-            tk.Label(chat_list_frame, text="No mutual matches yet").pack()
+            tk.Label(chat_list_frame, text="😿 No mutual matches yet", bg="#FFF0FA", fg="#aaa").pack()
         else:
             for user in mutual_matches:
                 tk.Button(
                     chat_list_frame,
-                    text=user,
+                    text=f"🐱 {user}",
                     width=25,
+                    bg="#F9A8C9",
+                    fg="white",
+                    relief="flat",
+                    cursor="hand2",
                     command=lambda u=user: open_chat(u)
                 ).pack(pady=3)
 

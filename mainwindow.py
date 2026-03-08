@@ -10,10 +10,10 @@ import os
 import sys  # needed to fully exit
 
 # ── colors & fonts ─────────────────────────────────────────────────────────────
-BG_OUTER  = "#F5D6A0"
-BG_CARD   = "#B8D4EE"
-ACCENT    = "#F4A0B5"
-BTN_HOV   = "#F08098"
+BG_OUTER  = "#FFF0FA"
+BG_CARD   = "#FFFFFF"
+ACCENT    = "#F48FB1"
+BTN_HOV   = "#F06292"
 PIXEL_FONTS = ["Press Start 2P", "Courier New", "Courier", "monospace"]
 
 def best_font(families, size, weight="normal"):
@@ -26,7 +26,7 @@ def best_font(families, size, weight="normal"):
 
 def open_main_window(username):
     main_window = tk.Toplevel()
-    main_window.title("Study App")
+    main_window.title("🐾 Paws & Pages")
     main_window.geometry("820x620")
     main_window.configure(bg=BG_OUTER)
 
@@ -42,7 +42,7 @@ def open_main_window(username):
 
     tk.Label(
         welcome_card,
-        text=f"Welcome, {username}!",
+        text=f"🐾 Paws & Pages  ·  Welcome, {username}! =^.^=",
         font=title_font,
         bg=BG_CARD,
         fg=ACCENT
@@ -55,13 +55,13 @@ def open_main_window(username):
 
     logout_btn = tk.Button(
         top_frame,
-        text="Logout",
+        text="👋 Logout",
         command=logout,
-        bg=ACCENT,
+        bg="#F9A8C9",
         fg="white",
         font=tab_font,
         padx=16,
-        pady=6,
+        pady=8,
         relief="flat",
         cursor="hand2",
         activebackground=BTN_HOV,
@@ -90,11 +90,11 @@ def open_main_window(username):
         tab_frame.pack(expand=True, fill="both")
         return container
 
-    notebook.add(wrap_tab(create_leaderboard_tab), text="Leaderboard")
-    notebook.add(wrap_tab(create_profile_tab), text="Profile")
-    notebook.add(wrap_tab(create_match_tab), text="Study Match")
-    notebook.add(wrap_tab(create_messages_tab), text="Messages")
-    notebook.add(wrap_tab(create_quests_tab), text="Quests")
-    notebook.add(wrap_tab(create_log_hours_tab), text="Log Hours")
+    notebook.add(wrap_tab(create_leaderboard_tab), text="🏆 Leaderboard")
+    notebook.add(wrap_tab(create_profile_tab), text="🐱 Profile")
+    notebook.add(wrap_tab(create_match_tab), text="🐾 Study Match")
+    notebook.add(wrap_tab(create_messages_tab), text="💌 Messages")
+    notebook.add(wrap_tab(create_quests_tab), text="📋 Quests")
+    notebook.add(wrap_tab(create_log_hours_tab), text="⏱️ Log Hours")
 
     main_window.mainloop()

@@ -3,9 +3,9 @@ from tkinter import messagebox
 from addMongo import users_col  # MongoDB Users collection
 
 def create_match_tab(parent, username):
-    match_frame = tk.Frame(parent)
+    match_frame = tk.Frame(parent, bg="#FFF0FA")
 
-    tk.Label(match_frame, text="Find study partners!", font=("Arial", 14)).pack(pady=10)
+    tk.Label(match_frame, text="🐾 Find Your Study Buddy! =^.^=", font=("Arial", 14), bg="#FFF0FA", fg="#F48FB1").pack(pady=10)
 
     # Load all users except current
     other_users_cursor = users_col.find({"_id": {"$ne": username}})
@@ -99,8 +99,8 @@ def create_match_tab(parent, username):
     btn_frame = tk.Frame(match_frame)
     btn_frame.pack(pady=10)
 
-    tk.Button(btn_frame, text="Pass", command=skip, width=15, bg="red", fg="white").pack(side="right", padx=10)
-    tk.Button(btn_frame, text="Match", command=match, width=15, bg="green", fg="white").pack(side="left", padx=10)
+    tk.Button(btn_frame, text="😾 Pass", command=skip, width=15, bg="#FFABAB", fg="white", relief="flat", cursor="hand2").pack(side="right", padx=10)
+    tk.Button(btn_frame, text="😻 Match!", command=match, width=15, bg="#B5EAD7", fg="#2e7d52", relief="flat", cursor="hand2").pack(side="left", padx=10)
 
     load_profile(profile_index.get())
 
