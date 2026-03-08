@@ -1,17 +1,16 @@
 import tkinter as tk
 from tkinter import messagebox
 import tkinter.font as tkfont
-import os
 from mainwindow import open_main_window
 import addMongo
 
-# ── colours ──────────────────────────────────────────────────────────────────
-BG_OUTER  = "#F5D6A0"   # warm sandy yellow border
-BG_CARD   = "#B8D4EE"   # soft sky blue card
-PINK      = "#F4A0B5"   # pixel-art title / link pink
-INPUT_BG  = "#F0F4F8"   # near-white input background
-INPUT_FG  = "#8AA8C0"   # muted blue placeholder text
-BTN_BG    = "#F4A0B5"   # pink login button
+# ── colors ─────────────────────────────────────────────────────────────
+BG_OUTER  = "#F5D6A0"
+BG_CARD   = "#B8D4EE"
+PINK      = "#F4A0B5"
+INPUT_BG  = "#F0F4F8"
+INPUT_FG  = "#8AA8C0"
+BTN_BG    = "#F4A0B5"
 BTN_FG    = "#FFFFFF"
 BTN_HOV   = "#F08098"
 
@@ -24,24 +23,22 @@ def best_font(families, size, weight="normal"):
             return (f, size, weight)
     return (families[-1], size, weight)
 
-# ── auth helpers ──────────────────────────────────────────────────────────────
+# ── MongoDB auth helpers ────────────────────────────────────────────────
 def verify(username, password):
     user = addMongo.login_col.find_one({"_id": username})
-    if user and user.get("password") == password:
-        return True
-    return False
+    return user is not None and user.get("password") == password
 
 def username_exists(username):
     return addMongo.login_col.find_one({"_id": username}) is not None
 
-# ── hover effect for button ───────────────────────────────────────────────────
+# ── hover effect for button ─────────────────────────────────────────────
 def on_enter(e, btn):
     btn.config(bg=BTN_HOV)
 
 def on_leave(e, btn):
     btn.config(bg=BTN_BG)
 
-# ── create-account window ─────────────────────────────────────────────────────
+# ── create-account window ──────────────────────────────────────────────
 def create_account_window(parent):
     win = tk.Toplevel(parent)
     win.title("Create Account")
@@ -53,22 +50,10 @@ def create_account_window(parent):
     card.place(relx=0.5, rely=0.5, anchor="center", width=280, height=300)
 
     title_font = best_font(PIXEL_FONTS, 11, "bold")
-    label_font = best_font(["Nunito", "Helvetica Neue", "Helvetica"], 9)
     entry_font = best_font(["Nunito", "Helvetica Neue", "Helvetica"], 11)
 
     tk.Label(card, text="NEW ACCOUNT", font=title_font,
              fg=PINK, bg=BG_CARD).pack(pady=(22, 16))
-    save_btn = tk.Button(
-        card,
-        text="Create Account",
-        font=best_font(["Nunito", "Helvetica"], 11, "bold"),
-        bg=BTN_BG,
-        fg=BTN_FG,
-        command=save
-    )
-    save_btn.pack(pady=20)
-    save_btn.bind("<Enter>", lambda e: on_enter(e, save_btn))
-    save_btn.bind("<Leave>", lambda e: on_leave(e, save_btn))
 
     def make_entry(parent, placeholder, show=None):
         frame = tk.Frame(parent, bg=INPUT_BG, bd=0)
@@ -108,20 +93,40 @@ def create_account_window(parent):
             messagebox.showerror("Error", "Username already exists.", parent=win)
             return
 
-        # Save to MongoDB instead of file
+        # Save login info
         addMongo.login_col.insert_one({"_id": uname, "password": pword})
 
-        # Keep creating userInfo file for points/hours
-        os.makedirs("userInfo", exist_ok=True)
-        user_file_path = os.path.join("userInfo", f"{uname}.txt")
-        with open(user_file_path, "w") as f:
-            f.write("PointsEarned: 0\n")
-            f.write("HoursLogged: 0\n")
+        # Save empty user profile in user_col
+        addMongo.users_col.insert_one({
+            "_id": uname,
+            "PointsEarned": 0,
+            "HoursLogged": 0,
+            "Bio": "",
+            "School": "",
+            "Subjects": "",
+            "StudyStyle": "",
+            "StudyTime": "",
+            "Location": "",
+            "GroupSize": "",
+            "Matches": []
+        })
 
         messagebox.showinfo("Success", f"Account for {uname} created!", parent=win)
         win.destroy()
 
-# ── main login window ─────────────────────────────────────────────────────────
+    save_btn = tk.Button(
+        card,
+        text="Create Account",
+        font=best_font(["Nunito", "Helvetica"], 11, "bold"),
+        bg=BTN_BG,
+        fg=BTN_FG,
+        command=save
+    )
+    save_btn.pack(pady=20)
+    save_btn.bind("<Enter>", lambda e: on_enter(e, save_btn))
+    save_btn.bind("<Leave>", lambda e: on_leave(e, save_btn))
+
+# ── main login window ────────────────────────────────────────────────────
 def build_main():
     window = tk.Tk()
     window.title("Login")
