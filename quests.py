@@ -20,44 +20,45 @@ QUEST_POOL = [
 
 def create_quests_tab(parent, username):
 
-    frame = tk.Frame(parent)
+    frame = tk.Frame(parent, bg="#FFF0F8")
 
-    tk.Label(frame, text="📋 STUDY QUESTS", font=("Arial", 14, "bold")).pack(pady=(10,2))
-    tk.Label(frame, text="Complete quests to earn Points!", font=("Arial", 10)).pack(pady=(0,10))
+    tk.Label(frame, text="🐾 PAWS & PAGES QUESTS 🐾", font=("Arial", 14, "bold"), bg="#FFF0F8", fg="#5B7DB1").pack(pady=(10,2))
+    tk.Label(frame, text="✨ Complete quests to earn Paw Points! 😸", font=("Arial", 10), bg="#FFF0F8", fg="#888").pack(pady=(0,10))
 
     # Load total points from MongoDB
     user_doc = users_col.find_one({"_id": username})
     total_points = user_doc.get("pointsEarned", 0) if user_doc else 0
 
-    points_label = tk.Label(frame, text=f"Total Points: {total_points}", font=("Arial", 12, "bold"))
+    points_label = tk.Label(frame, text=f"🐾 Total Paw Points: {total_points}", font=("Arial", 12, "bold"), bg="#FFF0F8", fg="#F7A8C4")
     points_label.pack(pady=(0,10))
 
-    quest_container = tk.Frame(frame)
+    quest_container = tk.Frame(frame, bg="#FFF0F8")
     quest_container.pack(fill="both", expand=True)
 
     def build_quest_card(parent, quest):
 
-        card = tk.Frame(parent, bd=1, relief="solid", padx=8, pady=6)
+        card = tk.Frame(parent, bg="#FFF0F8", padx=8, pady=6, relief="groove", bd=2)
         card.pack(fill="x", pady=4, padx=10)
 
-        icon = tk.Label(card, text=quest["icon"], font=("Arial", 18))
+        icon = tk.Label(card, text=quest["icon"], font=("Arial", 18), bg="#FFF0F8")
         icon.pack(side="left", padx=(0,10))
 
-        text_frame = tk.Frame(card)
+        text_frame = tk.Frame(card, bg="#FFF0F8")
         text_frame.pack(side="left", fill="x", expand=True)
 
-        task_label = tk.Label(text_frame, text=quest["task"], font=("Arial", 10), anchor="w")
+        task_label = tk.Label(text_frame, text=quest["task"], font=("Arial", 10), anchor="w", bg="#FFF0F8", fg="#FFFFFF")
         task_label.pack(anchor="w")
 
         reward_label = tk.Label(
             text_frame,
-            text=f"+{quest['points_reward']} Points",
+            text=f"+{quest['points_reward']} Paw Points 🐾",
             font=("Arial", 8, "bold"),
-            fg="green"
+            fg="#81C784",
+            bg="#FFF0F8"
         )
         reward_label.pack(anchor="w")
 
-        complete_btn = tk.Button(card, text="Complete ✓", bg="green", fg="white")
+        complete_btn = tk.Button(card, text="😸 Complete!", bg="#F9A8C9", fg="#FFFFFF", relief="groove", padx=8, pady=4, cursor="hand2", font=("Arial", 9, "bold"))
         complete_btn.pack(side="right", padx=6)
 
         def complete():
@@ -73,12 +74,12 @@ def create_quests_tab(parent, username):
 
             # Reload total points
             new_total = users_col.find_one({"_id": username}).get("pointsEarned", 0)
-            points_label.config(text=f"Total Points: {new_total}")
+            points_label.config(text=f"🐾 Total Paw Points: {new_total}")
 
             # Mark quest completed visually
             task_label.config(fg="gray")
             reward_label.config(text="Completed ✓", fg="gray")
-            complete_btn.config(text="Done", bg="gray")
+            complete_btn.config(text="✓ Done!", bg="#C8EAD7", fg="#2e7d52")
 
             messagebox.showinfo(
                 "Quest Complete! 🎉",
@@ -99,6 +100,7 @@ def create_quests_tab(parent, username):
 
     load_quests()
 
-    tk.Button(frame, text="🎲 Load New Quests", command=load_quests).pack(pady=6)
+    tk.Button(frame, text="🐱 Meow! Load New Quests", command=load_quests,
+              bg="#F9A8C9", fg="#FFFFFF", relief="groove", padx=16, pady=6, cursor="hand2", font=("Arial", 10, "bold")).pack(pady=6)
 
     return frame
