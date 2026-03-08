@@ -3,7 +3,7 @@ import tkinter as tk
 import threading
 import google.generativeai as genai
 
-GEMINI_API_KEY = "AIzaSyDm8MaBxXTzXPbiK2rCeixtmozE7oAtboo"
+GEMINI_API_KEY = "AIzaSyC2WEMPrHXXdonEmj86iqUWOuXXmfjzt9s"
 SYSTEM = """You are Meow, a cat-themed AI assistant. Every response must include 
 at least one cat pun. Be playful, warm, and fun. Keep responses short (2-3 sentences). 
 Examples of puns: purr-fect, fur-real, claw-some, paw-sible, hiss-terical, meow-velous."""
