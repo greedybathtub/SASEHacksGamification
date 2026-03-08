@@ -1,7 +1,7 @@
 # mainwindow.py - Main application window with tabs for Paws & Pages
 import tkinter as tk
 from tkinter import ttk
-from profile import create_profile_tab
+from userProfile import create_profile_tab
 from studyMatch import create_match_tab
 from messages import create_messages_tab
 from loghours import create_log_hours_tab
